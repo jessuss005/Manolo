@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Factura de Electricista</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #logo {
+      max-width: 25%;
+      height: auto;
+    }
+
+    h1 {
+      color: #0066cc;
+      margin-bottom: -20px;
+      margin-top: -5px;
+    }
+
+    h2{
+    margin-top: -15px;
+    margin-bottom: 0px;
+    }
+
+    #invoice {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    label {
+      /* display: block; */
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #0066cc;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+
+    #hideButton {
+      background-color: #ff3333;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #0066cc;
+      color: #fff;
+    }
+
+    #total {
+      margin-top: 20px;
+      text-align: right;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img id="logo" src="logo.png" alt="Tu Logo">
+    <h1>Factura</h1>
+  </header>
+
+  <div id="invoice">
+    <form id="clientForm">
+      <label for="clientName">Nombre del Cliente:</label>
+      <input type="text" id="clientName" required>
+      <br>
+      <label for="clientID">Cédula/RIF del Cliente:</label>
+      <input type="text" id="clientID" required>
+    </form>
+
+    <h2>Detalle del Servicio</h2>
+    <form id="serviceForm">
+      <label id="descriptionLabel" for="serviceDescription">Descripción del Servicio:</label>
+      <input type="text" id="serviceDescription" required>
+      <br>
+      <label id="priceLabel" for="servicePrice">Precio:</label>
+      <input type="number" id="servicePrice" step="0.01" required>
+      <br>
+      <button type="button" onclick="addService()">Agregar Servicio</button>
+      <button type="button" id="hideButton" onclick="toggleFields()">Ocultar</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Descripción del Servicio</th>
+          <th>Precio</th>
+        </tr>
+      </thead>
+      <tbody id="serviceTableBody"></tbody>
+    </table>
+
+    <div id="total">
+      <p><strong>Total:</strong> <span id="totalAmount">$0.00</span></p>
+    </div>
+  </div>
+
+  <script>
+    function addService() {
+      const description = document.getElementById("serviceDescription").value;
+      const price = parseFloat(document.getElementById("servicePrice").value);
+
+      if (description && !isNaN(price) && price > 0) {
+        const tableBody = document.getElementById("serviceTableBody");
+        const newRow = document.createElement("tr");
+
+        const descriptionCell = document.createElement("td");
+        descriptionCell.textContent = description;
+        newRow.appendChild(descriptionCell);
+
+        const priceCell = document.createElement("td");
+        priceCell.textContent = `$${price.toFixed(2)}`;
+        newRow.appendChild(priceCell);
+
+        tableBody.appendChild(newRow);
+
+        updateTotal();
+      } else {
+        alert("Por favor, ingresa una descripción y un precio válido.");
+      }
+    }
+
+    function updateTotal() {
+      const prices = document.querySelectorAll("#serviceTableBody td:nth-child(2)");
+      let total = 0;
+
+      prices.forEach(price => {
+        total += parseFloat(price.textContent.replace("$", ""));
+      });
+
+      document.getElementById("totalAmount").textContent = `$${total.toFixed(2)}`;
+    }
+
+    function toggleFields() {
+      const descriptionLabel = document.getElementById("descriptionLabel");
+      const priceLabel = document.getElementById("priceLabel");
+      const descriptionField = document.getElementById("serviceDescription");
+      const priceField = document.getElementById("servicePrice");
+
+      descriptionLabel.toggleAttribute("hidden");
+      priceLabel.toggleAttribute("hidden");
+      descriptionField.toggleAttribute("hidden");
+      priceField.toggleAttribute("hidden");
+    }
+  </script>
+
+</body>
+</html>
